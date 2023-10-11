@@ -30,7 +30,7 @@ class Lab2ApplicationTests {
 
 	@Test
 	void currenciesLength() {
-		Integer currenciesLength = dataController.getRandomnCurrencies().size();
+		Integer currenciesLength = dataController.getRandomCurrencies().size();
 		assertEquals(20, currenciesLength);
 	}
 	
