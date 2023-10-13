@@ -95,7 +95,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [ip-172-31-26-85]
+    runs-on: self-hosted
     steps:
       - name: Pull Image from docker hub
         run: docker pull jonatanleal/springboot-example:latest
