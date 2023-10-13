@@ -73,3 +73,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+build:
+  runs-on: [ubuntu-latest]
+  steps:
+    - name: Checkout source
+      uses: actions/checkout@v3
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+    - name: Build Project
+      run: mvn clean install -DskipTests
+    - name: Login to docker hub
+      run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+    - name: Build docker image
+      run: docker build -t jonatanleal/springboot-example .
+    - name: Publish image to docker hub
+      run: docker push jonatanleal/springboot-example:latest
+
+  deploy:
+    needs: build
+    runs-on: [ip-172-31-26-85]
+    steps:
+      - name: Pull Image from docker hub
+        run: docker pull jonatanleal/springboot-example:latest
+      - name: Delete old container
+        run: docker rm -f springboot-example-container
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name springboot-example-container jonatanleal/springboot-example
