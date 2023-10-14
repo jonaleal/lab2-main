@@ -75,6 +75,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
+    needs: sonar
+    name: Build docker image
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout source
@@ -95,6 +97,7 @@ jobs:
 
   deploy:
     needs: build
+    name: Deploy docker image
     runs-on: self-hosted
     steps:
       - name: Pull Image from docker hub
